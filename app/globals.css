@@ -1,0 +1,306 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Serif+Thai:wght@400;700&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@layer base {
+  :root {
+    --background: 350 30% 5%;
+    --foreground: 20 20% 95%;
+    --card: 350 25% 8%;
+    --card-foreground: 20 20% 95%;
+    --popover: 350 25% 10%;
+    --popover-foreground: 20 20% 95%;
+    --primary: 346 77% 60%;
+    --primary-foreground: 20 20% 98%;
+    --secondary: 350 20% 14%;
+    --secondary-foreground: 20 20% 90%;
+    --muted: 350 15% 16%;
+    --muted-foreground: 20 10% 60%;
+    --accent: 20 60% 70%;
+    --accent-foreground: 350 30% 6%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 350 20% 18%;
+    --input: 350 20% 18%;
+    --ring: 346 77% 60%;
+    --chart-1: 346 77% 60%;
+    --chart-2: 20 60% 70%;
+    --chart-3: 350 30% 40%;
+    --chart-4: 15 50% 55%;
+    --chart-5: 340 60% 50%;
+    --radius: 0.75rem;
+    --gold: 40 80% 55%;
+    --rose-glow: 346 77% 50%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Animated gradient background */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  25% {
+    background-position: 100% 50%;
+  }
+  50% {
+    background-position: 100% 0%;
+  }
+  75% {
+    background-position: 0% 100%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.valentine-bg {
+  background: linear-gradient(
+    135deg,
+    hsl(350, 30%, 5%) 0%,
+    hsl(340, 40%, 8%) 20%,
+    hsl(350, 30%, 5%) 40%,
+    hsl(330, 35%, 7%) 60%,
+    hsl(350, 30%, 5%) 80%,
+    hsl(345, 30%, 9%) 100%
+  );
+  background-size: 400% 400%;
+  animation: gradientShift 20s ease infinite;
+}
+
+/* Vignette overlay */
+.vignette {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: radial-gradient(
+    ellipse at center,
+    transparent 40%,
+    rgba(10, 2, 5, 0.6) 100%
+  );
+}
+
+/* Star particles */
+@keyframes twinkle {
+  0%,
+  100% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.5);
+  }
+}
+
+.star-particle {
+  position: absolute;
+  width: 2px;
+  height: 2px;
+  background: white;
+  border-radius: 50%;
+  animation: twinkle var(--duration, 3s) ease-in-out var(--delay, 0s) infinite;
+}
+
+/* Shimmer sweep */
+@keyframes shimmerSweep {
+  0% {
+    transform: translateX(-150%) rotate(25deg);
+  }
+  100% {
+    transform: translateX(250%) rotate(25deg);
+  }
+}
+
+/* Float bobbing */
+@keyframes floatBob {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+/* Seal glow pulse */
+@keyframes sealGlow {
+  0%,
+  100% {
+    box-shadow:
+      0 0 15px rgba(233, 69, 96, 0.3),
+      0 0 30px rgba(233, 69, 96, 0.1);
+  }
+  50% {
+    box-shadow:
+      0 0 25px rgba(233, 69, 96, 0.6),
+      0 0 50px rgba(233, 69, 96, 0.2);
+  }
+}
+
+/* Text writing reveal */
+@keyframes writeReveal {
+  from {
+    clip-path: inset(0 100% 0 0);
+  }
+  to {
+    clip-path: inset(0 0% 0 0);
+  }
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(
+    135deg,
+    hsl(346, 77%, 65%) 0%,
+    hsl(20, 60%, 70%) 30%,
+    hsl(40, 80%, 65%) 50%,
+    hsl(346, 77%, 65%) 70%,
+    hsl(340, 60%, 75%) 100%
+  );
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: gradientTextShift 4s ease infinite;
+}
+
+@keyframes gradientTextShift {
+  0% {
+    background-position: 0% center;
+  }
+  50% {
+    background-position: 100% center;
+  }
+  100% {
+    background-position: 0% center;
+  }
+}
+
+/* Glassmorphism card */
+.glass-card {
+  background: rgba(30, 10, 15, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(233, 69, 96, 0.15);
+  box-shadow:
+    0 8px 32px rgba(0, 0, 0, 0.4),
+    0 0 80px rgba(233, 69, 96, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+}
+
+/* Tap text glow */
+@keyframes tapGlow {
+  0%,
+  100% {
+    text-shadow: 0 0 8px rgba(233, 69, 96, 0.3);
+    opacity: 0.6;
+  }
+  50% {
+    text-shadow: 0 0 16px rgba(233, 69, 96, 0.6);
+    opacity: 1;
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(350, 30%, 5%);
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(346, 77%, 40%);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(346, 77%, 50%);
+}
+
+/* Micro particle float around letter */
+@keyframes microFloat {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0;
+  }
+  20% {
+    opacity: 1;
+  }
+  80% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--dx, 20px), var(--dy, -40px)) scale(0);
+    opacity: 0;
+  }
+}
+
+/* ===== Responsive: Landscape Mode ===== */
+@media (orientation: landscape) and (max-height: 500px) {
+  .valentine-bg {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+  .glass-card {
+    padding: 1.25rem 1.5rem !important;
+    max-width: 28rem;
+  }
+  .glass-card .space-y-5 {
+    gap: 0.5rem;
+  }
+}
+
+@media (orientation: landscape) {
+  .valentine-bg {
+    min-height: 100vh;
+    min-height: 100dvh;
+  }
+}
+
+/* ===== Responsive: Small screens (portrait phones) ===== */
+@media (max-width: 380px) {
+  .glass-card {
+    padding: 1.25rem !important;
+    border-radius: 1.25rem;
+  }
+  .gradient-text {
+    font-size: 2rem !important;
+  }
+}
+
+/* ===== Safe area for notch devices ===== */
+@supports (padding: env(safe-area-inset-top)) {
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* Use dvh for full viewport on mobile */
+.min-h-screen {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
