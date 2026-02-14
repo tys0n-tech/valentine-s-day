@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { writeFile, readFile, mkdir } from "fs/promises"
-import { existsSync } from "fs"
-import path from "path"
+import { put, list, head } from "@vercel/blob"
 
 // Generate a short random ID (6 chars)
 function generateShortId(): string {
@@ -17,7 +15,7 @@ function generateShortId(): string {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const { messages, imageId, musicId, startTime, endTime } = body
+    const { messages, imageUrl, musicId, startTime, endTime } = body
 
     if (!messages || !Array.isArray(messages)) {
       return NextResponse.json(
@@ -29,22 +27,19 @@ export async function POST(request: NextRequest) {
     const shareId = generateShortId()
     const shareData = {
       messages,
-      imageId: imageId || null,
+      imageUrl: imageUrl || null,
       musicId: musicId || null,
       startTime: startTime || 0,
       endTime: endTime || 0,
       createdAt: new Date().toISOString(),
     }
 
-    // Create shares directory if not exists
-    const sharesDir = path.join(process.cwd(), "data", "shares")
-    if (!existsSync(sharesDir)) {
-      await mkdir(sharesDir, { recursive: true })
-    }
-
-    // Save share data
-    const filepath = path.join(sharesDir, `${shareId}.json`)
-    await writeFile(filepath, JSON.stringify(shareData, null, 2))
+    // Upload share data as JSON to Vercel Blob
+    await put(`shares/${shareId}.json`, JSON.stringify(shareData), {
+      access: "public",
+      addRandomSuffix: false,
+      contentType: "application/json",
+    })
 
     return NextResponse.json({
       success: true,
@@ -72,17 +67,21 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const filepath = path.join(process.cwd(), "data", "shares", `${id}.json`)
-    
-    if (!existsSync(filepath)) {
+    // Find the blob
+    const { blobs } = await list({ prefix: `shares/${id}.json` })
+
+    if (blobs.length === 0) {
       return NextResponse.json(
         { error: "ไม่พบข้อมูล" },
         { status: 404 }
       )
     }
 
-    const data = await readFile(filepath, "utf-8")
-    return NextResponse.json(JSON.parse(data))
+    // Fetch the JSON content from the blob URL
+    const response = await fetch(blobs[0].url)
+    const data = await response.json()
+
+    return NextResponse.json(data)
   } catch {
     return NextResponse.json(
       { error: "ไม่พบข้อมูล" },

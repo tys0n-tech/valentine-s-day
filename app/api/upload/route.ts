@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server"
-import { writeFile, mkdir } from "fs/promises"
-import { existsSync } from "fs"
-import path from "path"
+import { put, list } from "@vercel/blob"
 
 export async function POST(request: NextRequest) {
   try {
@@ -31,34 +29,21 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Generate unique ID based on timestamp + random
+    // Generate unique ID
     const uniqueId = `${Date.now()}-${Math.random().toString(36).substring(2, 9)}`
-    const bytes = await file.arrayBuffer()
-    const buffer = Buffer.from(bytes)
-
-    // Get file extension
     const extension = file.name.split(".").pop() || "jpg"
-    const filename = `${uniqueId}.${extension}`
+    const filename = `uploads/${uniqueId}.${extension}`
 
-    // Create uploads directory if not exists
-    const uploadsDir = path.join(process.cwd(), "public", "uploads")
-    if (!existsSync(uploadsDir)) {
-      await mkdir(uploadsDir, { recursive: true })
-    }
+    // Upload to Vercel Blob
+    const blob = await put(filename, file, {
+      access: "public",
+      addRandomSuffix: false,
+    })
 
-    // Save file
-    const filepath = path.join(uploadsDir, filename)
-    console.log("Saving file to:", filepath)
-    await writeFile(filepath, buffer)
-    console.log("File saved successfully")
-
-    // Return the URL
-    const imageUrl = `/uploads/${filename}`
-    
     return NextResponse.json({
       success: true,
-      url: imageUrl,
-      id: uniqueId
+      url: blob.url,
+      id: uniqueId,
     })
   } catch (error) {
     console.error("Upload error:", error)
@@ -81,17 +66,13 @@ export async function GET(request: NextRequest) {
     )
   }
 
-  // Find the file with matching ID
-  const uploadsDir = path.join(process.cwd(), "public", "uploads")
-  
   try {
-    const files = await import("fs/promises")
-    const fileList = await files.readdir(uploadsDir)
-    const matchingFile = fileList.find(f => f.startsWith(id))
+    // List blobs with the prefix to find the matching file
+    const { blobs } = await list({ prefix: `uploads/${id}` })
 
-    if (matchingFile) {
+    if (blobs.length > 0) {
       return NextResponse.json({
-        url: `/uploads/${matchingFile}`
+        url: blobs[0].url,
       })
     }
 

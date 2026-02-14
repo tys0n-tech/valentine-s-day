@@ -102,8 +102,8 @@ export function LoveLetter() {
       if (data.messages) {
         setMessages(data.messages)
       }
-      if (data.imageId) {
-        loadSharedImage(data.imageId)
+      if (data.imageUrl) {
+        setImageUrl(data.imageUrl)
       }
       if (data.musicId) {
         setYoutubeId(data.musicId)
@@ -239,7 +239,7 @@ export function LoveLetter() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           messages,
-          imageId: imageId || null,
+          imageUrl: imageUrl || null,
           musicId: youtubeId || null,
           startTime,
           endTime,
